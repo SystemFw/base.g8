@@ -34,15 +34,22 @@ lazy val typeSystemEnhancements = Seq(
 )
 
 
+def dep(org: String)(version: String)(modules: String*) =
+    Seq(modules:_*) map { name =>
+      org %% name % version
+    }
+
+
 lazy val dependencies = {
-  val scalazVersion = "$scalazVersion$"
-  val deps = Seq(
-    "org.scalaz" %% "scalaz-core" % scalazVersion, // obviously
-    "org.scalaz" %% "scalaz-concurrent" % scalazVersion,
-    "org.scalaz" %% "scalaz-effect" % scalazVersion
+  val scalaz = dep("org.scalaz")("$scalazVersion$")(
+    "scalaz-core",
+    "scalaz-concurrent",
+    "scalaz-effect"
   )
 
-  libraryDependencies ++= deps
+  val mixed = Seq()
+
+  libraryDependencies ++= scalaz ++ mixed
 }
 
 
