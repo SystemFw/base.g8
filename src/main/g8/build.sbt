@@ -3,7 +3,8 @@ lazy val root = (project in file(".")).
     commonSettings,
     compilerOptions,
     typeSystemEnhancements,
-    dependencies
+    dependencies,
+    tests
   )
 
 lazy val commonSettings = Seq(
@@ -52,4 +53,28 @@ lazy val dependencies = {
   libraryDependencies ++= scalaz ++ mixed
 }
 
+lazy val tests = {
+  val dependencies = {
+    val specs2 = dep("org.specs2")("$specs2Version$")(
+      "specs2-core",
+      "specs2-matcher-extra",
+      "specs2-scalaz",
+      "specs2-scalacheck"
+    )
+
+    val mixed = Seq(
+      "org.scalacheck" %% "scalacheck" % "$scalacheckVersion$"
+    )
+
+    libraryDependencies ++= (specs2 ++ mixed).map(_ % "test")
+  }
+
+  val frameworks =
+    testFrameworks := Seq(TestFrameworks.Specs2)
+
+  val unitFilter =
+    testOptions in Test += Tests.Filter(name => name endsWith "Spec")
+
+  Seq(dependencies, frameworks, unitFilter)
+}
 
