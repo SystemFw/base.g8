@@ -1,6 +1,7 @@
 lazy val root = (project in file(".")).
   settings(
     commonSettings,
+    consoleSettings,
     compilerOptions,
     typeSystemEnhancements,
     dependencies,
@@ -9,10 +10,12 @@ lazy val root = (project in file(".")).
 
 lazy val commonSettings = Seq(
   organization := "$organization$",
-  name := "$name$",
+  name := "$name;format="lower,word"$",
   scalaVersion := "2.11.8"
 )
 
+val consoleSettings =
+  initialCommands := s"import \${organization.value}.\${name.value}._"
 
 lazy val compilerOptions = {
   val options = Seq(
@@ -77,4 +80,3 @@ lazy val tests = {
 
   Seq(dependencies, frameworks, unitFilter)
 }
-
