@@ -75,8 +75,5 @@ lazy val tests = {
   val frameworks =
     testFrameworks := Seq(TestFrameworks.Specs2)
 
-  val unitFilter =
-    testOptions in Test += Tests.Filter(name => name endsWith "Spec")
-
-  Seq(dependencies, frameworks, unitFilter)
+  Seq(dependencies, frameworks)
 }
