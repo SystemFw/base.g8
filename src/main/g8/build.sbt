@@ -11,7 +11,7 @@ lazy val root = (project in file(".")).
 lazy val commonSettings = Seq(
   organization := "$organization$",
   name := "$name;format="lower,word"$",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.11.9"
 )
 
 val consoleSettings =
