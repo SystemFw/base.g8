@@ -17,19 +17,18 @@ lazy val commonSettings = Seq(
 val consoleSettings =
   initialCommands := s"import \${organization.value}.\${name.value}._"
 
-lazy val compilerOptions = {
-  val options = Seq(
+lazy val compilerOptions =
+  scalacOptions ++= Seq(
     "-unchecked",
     "-deprecation",
+    "-encoding","utf8",
     "-target:jvm-1.8",
     "-feature",
     "-language:implicitConversions",
-    "-language:higherKinds"
+    "-language:higherKinds",
+    "-language:existentials",
+    "-Ywarn-unused-import"
   )
-
-  scalacOptions ++= options
-}
-
 
 lazy val typeSystemEnhancements = Seq(
   resolvers += Resolver.sonatypeRepo("releases"),
