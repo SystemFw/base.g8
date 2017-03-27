@@ -52,7 +52,10 @@ lazy val dependencies = {
 
   val mixed = Seq()
 
-  libraryDependencies ++= scalaz ++ mixed
+  libraryDependencies ++= Seq(
+    scalaz,
+    mixed
+  ).flatten
 }
 
 lazy val tests = {
@@ -68,7 +71,10 @@ lazy val tests = {
       "org.scalacheck" %% "scalacheck" % "$scalacheckVersion$"
     )
 
-    libraryDependencies ++= (specs2 ++ mixed).map(_ % "test")
+    libraryDependencies ++= Seq(
+      specs2,
+      mixed
+    ).flatten.map(_ % "test")
   }
 
   val frameworks =
