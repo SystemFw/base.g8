@@ -28,15 +28,12 @@ lazy val compilerOptions =
     "-language:implicitConversions",
     "-language:higherKinds",
     "-language:existentials",
+    "-Ypartial-unification",
     "-Ywarn-unused-import"
   )
 
-lazy val typeSystemEnhancements = Seq(
-  resolvers += Resolver.sonatypeRepo("releases"),
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
-  addCompilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full)
-)
-
+lazy val typeSystemEnhancements =
+  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
 
 def dep(org: String)(version: String)(modules: String*) =
     Seq(modules:_*) map { name =>
