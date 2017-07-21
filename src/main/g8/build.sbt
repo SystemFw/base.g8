@@ -15,8 +15,10 @@ lazy val commonSettings = Seq(
   crossScalaVersions := Seq("2.11.11", "2.12.1")
 )
 
-val consoleSettings =
-  initialCommands := s"import \${organization.value}.\${name.value}._"
+lazy val consoleSettings = Seq(
+  initialCommands := s"import \${organization.value}.\${name.value}._",
+  scalacOptions in (Compile, console) ~= (_.filterNot(_ == "-Ywarn-unused-import"))
+)
 
 lazy val compilerOptions =
   scalacOptions ++= Seq(
@@ -29,7 +31,8 @@ lazy val compilerOptions =
     "-language:higherKinds",
     "-language:existentials",
     "-Ypartial-unification",
-    "-Ywarn-unused-import"
+    "-Ywarn-unused-import",
+    "-Ywarn-value-discard"
   )
 
 lazy val typeSystemEnhancements =
