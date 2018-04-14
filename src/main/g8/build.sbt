@@ -9,14 +9,13 @@ lazy val root = (project in file(".")).
   )
 
 lazy val commonSettings = Seq(
-  organization := "$organization$",
   name := "$name;format="lower,word"$",
-  scalaVersion := "2.11.11",
-  crossScalaVersions := Seq("2.11.11", "2.12.1")
+  scalaVersion := "2.11.12",
+  crossScalaVersions := Seq("2.11.12", "2.12.5")
 )
 
-lazy val consoleSettings = Seq(
-  initialCommands := s"import \${organization.value}.\${name.value}._",
+val consoleSettings = Seq(
+  initialCommands := s"import $defaultImportPath$",
   scalacOptions in (Compile, console) -= "-Ywarn-unused-import"
 )
 
@@ -24,7 +23,8 @@ lazy val compilerOptions =
   scalacOptions ++= Seq(
     "-unchecked",
     "-deprecation",
-    "-encoding","utf8",
+    "-encoding",
+    "utf8",
     "-target:jvm-1.8",
     "-feature",
     "-language:implicitConversions",
@@ -43,28 +43,35 @@ def dep(org: String)(version: String)(modules: String*) =
       org %% name % version
     }
 
-
 lazy val dependencies = {
-  val scalaz = dep("org.scalaz")("$scalazVersion$")(
-    "scalaz-core",
-    "scalaz-concurrent",
-    "scalaz-effect"
+  // brings in cats and cats-effect
+  val fs2 = dep("co.fs2")("$fs2Version$")(
+    "fs2-core",
+    "fs2-io"
   )
 
-  val mixed = Seq()
+  val mixed = Seq(
+  )
 
-  libraryDependencies ++= Seq(
-    scalaz,
-    mixed
-  ).flatten
+  def extraResolvers =
+    resolvers ++= Seq(
+      Resolver.sonatypeRepo("releases"),
+      Resolver.sonatypeRepo("snapshots")
+    )
+
+  val deps =
+    libraryDependencies ++= Seq(
+      fs2,
+      mixed
+    ).flatten
+
+  Seq(deps, extraResolvers)
 }
 
 lazy val tests = {
   val dependencies = {
     val specs2 = dep("org.specs2")("$specs2Version$")(
       "specs2-core",
-      "specs2-matcher-extra",
-      "specs2-scalaz",
       "specs2-scalacheck"
     )
 

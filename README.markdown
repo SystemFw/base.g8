@@ -1,4 +1,4 @@
-A [Giter8][g8] template for a basic Scala project with Scalaz.
+A [Giter8][g8] template for a basic Scala project with fs2 + cats-effect + cats.
 The focus is on a well written, modern build.sbt.
 
 Template license
