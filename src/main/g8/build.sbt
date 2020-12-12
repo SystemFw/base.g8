@@ -1,92 +1,47 @@
-lazy val root = (project in file(".")).
-  settings(
-    commonSettings,
-    consoleSettings,
-    compilerOptions,
-    typeSystemEnhancements,
-    dependencies,
-    tests
+ThisBuild / baseVersion := "0.1"
+ThisBuild / organization := "org.systemfw"
+ThisBuild / publishGithubUser := "SystemFw"
+ThisBuild / publishFullName := "Fabio Labella"
+
+// sbt-sonatype wants these in Global
+Global / homepage := Some(url("https://github.com/SystemFw/my-project"))
+Global / scmInfo := Some(ScmInfo(url("https://github.com/SystemFw/$name$"), "git@github.com:SystemFw/$name$.git"))
+Global / excludeLintKeys += scmInfo
+
+ThisBuild / crossScalaVersions := Seq("3.0.0-M2", "2.12.10", "2.13.4")
+ThisBuild / versionIntroduced := Map("3.0.0-M2" -> "3.0.0")
+
+ThisBuild / initialCommands := """
+  |import cats._, data._, syntax.all._
+  |import cats.effect._, concurrent._, implicits._
+  |import fs2._
+  |import fs2.concurrent._
+  |import scala.concurrent.duration._
+  |import $package$
+""".stripMargin
+
+ThisBuild / testFrameworks += new TestFramework("munit.Framework")
+
+lazy val root = project
+  .in(file("."))
+  .aggregate(core)
+  .enablePlugins(NoPublishPlugin)
+
+lazy val core = project
+  .in(file("modules/core"))
+  .settings(
+    name := "$name$-core",
+    scalafmtOnCompile := true,
+    libraryDependencies ++=
+      dep("org.typelevel", "cats-", "$cats$")("core")() ++
+      dep("org.typelevel", "cats-effect", "$ce$")("")("-laws") ++
+      dep("co.fs2", "fs2-", "$fs2$")("core", "io")() ++
+      dep("org.scalameta", "munit", "$munit$")()("", "-scalacheck") ++
+      dep("org.typelevel", "", "$munit_ce$")()("munit-cats-effect-2") ++
+      dep("org.typelevel",  "scalacheck-effect", "$munit_check_eff$")()("", "-munit")
   )
 
-lazy val commonSettings = Seq(
-  name := "$name;format="lower,word"$",
-  scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.11.12", "2.12.5")
-)
+def dep(org: String, prefix: String, version: String)(modules: String*)(testModules: String*) =
+  modules.map(m => org %% (prefix ++ m) % version) ++
+   testModules.map(m => org %% (prefix ++ m) % version % Test)
 
-val consoleSettings = Seq(
-  initialCommands := s"import $defaultImportPath$",
-  scalacOptions in (Compile, console) -= "-Ywarn-unused-import"
-)
-
-lazy val compilerOptions =
-  scalacOptions ++= Seq(
-    "-unchecked",
-    "-deprecation",
-    "-encoding",
-    "utf8",
-    "-target:jvm-1.8",
-    "-feature",
-    "-language:implicitConversions",
-    "-language:higherKinds",
-    "-language:existentials",
-    "-Ypartial-unification",
-    "-Ywarn-unused-import",
-    "-Ywarn-value-discard"
-  )
-
-lazy val typeSystemEnhancements =
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
-
-def dep(org: String)(version: String)(modules: String*) =
-    Seq(modules:_*) map { name =>
-      org %% name % version
-    }
-
-lazy val dependencies = {
-  // brings in cats and cats-effect
-  val fs2 = dep("co.fs2")("$fs2Version$")(
-    "fs2-core",
-    "fs2-io"
-  )
-
-  val mixed = Seq(
-  )
-
-  def extraResolvers =
-    resolvers ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")
-    )
-
-  val deps =
-    libraryDependencies ++= Seq(
-      fs2,
-      mixed
-    ).flatten
-
-  Seq(deps, extraResolvers)
-}
-
-lazy val tests = {
-  val dependencies = {
-    val specs2 = dep("org.specs2")("$specs2Version$")(
-      "specs2-core",
-      "specs2-scalacheck"
-    )
-
-    val mixed = Seq(
-      "org.scalacheck" %% "scalacheck" % "$scalacheckVersion$"
-    )
-
-    libraryDependencies ++= Seq(
-      specs2,
-      mixed
-    ).flatten.map(_ % "test")
-  }
-
-  val frameworks =
-    testFrameworks := Seq(TestFrameworks.Specs2)
-
-  Seq(dependencies, frameworks)
-}

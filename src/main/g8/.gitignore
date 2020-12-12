@@ -1,4 +1,4 @@
 target/
-.ensime
-.ensime_cache/
+.history
+.bsp
 .DS_Store
