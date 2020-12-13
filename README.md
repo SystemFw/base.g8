@@ -1,5 +1,8 @@
-A [Giter8][g8] template for a basic Scala project with fs2 + cats-effect + cats.
-The focus is on a well written, modern build.sbt.
+My template for FP scala projects with cats-effect and fs2.
+Testing based on munit.
+
+Largely based on sbt-spiewak, plus scalafmt and mdoc.
+
 
 Template license
 ----------------
