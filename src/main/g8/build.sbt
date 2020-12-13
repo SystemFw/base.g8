@@ -41,6 +41,15 @@ lazy val core = project
       dep("org.typelevel",  "scalacheck-effect", "$munit_check_eff$")()("", "-munit")
   )
 
+lazy val docs = project
+  .in(file("docs"))
+  .settings(
+    mdocIn := file("modules/docs"),
+    mdocOut := file("docs"),
+    mdocVariables := Map("VERSION" -> version.value)
+  ).dependsOn(core)
+   .enablePlugins(MdocPlugin)
+
 def dep(org: String, prefix: String, version: String)(modules: String*)(testModules: String*) =
   modules.map(m => org %% (prefix ++ m) % version) ++
    testModules.map(m => org %% (prefix ++ m) % version % Test)
