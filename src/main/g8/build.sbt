@@ -46,9 +46,10 @@ lazy val docs = project
   .settings(
     mdocIn := file("modules/docs"),
     mdocOut := file("docs"),
-    mdocVariables := Map("VERSION" -> version.value)
+    mdocVariables := Map("VERSION" -> version.value),
+    githubWorkflowArtifactUpload := false
   ).dependsOn(core)
-   .enablePlugins(MdocPlugin)
+   .enablePlugins(MdocPlugin, NoPublishPlugin)
 
 def dep(org: String, prefix: String, version: String)(modules: String*)(testModules: String*) =
   modules.map(m => org %% (prefix ++ m) % version) ++
