@@ -1,7 +1,12 @@
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 ThisBuild / baseVersion := "0.1"
 ThisBuild / organization := "org.systemfw"
 ThisBuild / publishGithubUser := "SystemFw"
 ThisBuild / publishFullName := "Fabio Labella"
+
+// add doc build
+replaceCommandAlias("ci","; project /; headerCheckAll; clean; testIfRelevant; docs/mdoc; mimaReportBinaryIssuesIfRelevant")
 
 // sbt-sonatype wants these in Global
 Global / homepage := Some(url("https://github.com/SystemFw/my-project"))
