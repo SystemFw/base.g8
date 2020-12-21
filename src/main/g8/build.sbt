@@ -9,7 +9,7 @@ ThisBuild / publishFullName := "Fabio Labella"
 replaceCommandAlias("ci","; project /; headerCheckAll; clean; testIfRelevant; docs/mdoc; mimaReportBinaryIssuesIfRelevant")
 
 // sbt-sonatype wants these in Global
-Global / homepage := Some(url("https://github.com/SystemFw/my-project"))
+Global / homepage := Some(url("https://github.com/SystemFw/$name$"))
 Global / scmInfo := Some(ScmInfo(url("https://github.com/SystemFw/$name$"), "git@github.com:SystemFw/$name$.git"))
 Global / excludeLintKeys += scmInfo
 
@@ -29,8 +29,9 @@ ThisBuild / testFrameworks += new TestFramework("munit.Framework")
 
 lazy val root = project
   .in(file("."))
+  .enablePlugins(NoPublishPlugin, SonatypeCiReleasePlugin)
   .aggregate(core)
-  .enablePlugins(NoPublishPlugin)
+
 
 lazy val core = project
   .in(file("modules/core"))
