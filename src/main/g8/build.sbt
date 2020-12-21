@@ -5,13 +5,13 @@ ThisBuild / organization := "org.systemfw"
 ThisBuild / publishGithubUser := "SystemFw"
 ThisBuild / publishFullName := "Fabio Labella"
 
-// add doc build
 replaceCommandAlias("ci","; project /; headerCheckAll; clean; testIfRelevant; docs/mdoc; mimaReportBinaryIssuesIfRelevant")
 
 // sbt-sonatype wants these in Global
 Global / homepage := Some(url("https://github.com/SystemFw/$name$"))
 Global / scmInfo := Some(ScmInfo(url("https://github.com/SystemFw/$name$"), "git@github.com:SystemFw/$name$.git"))
 Global / excludeLintKeys += scmInfo
+ThisBuild / spiewakMainBranches := Seq("main")
 
 ThisBuild / crossScalaVersions := Seq("3.0.0-M2", "2.12.10", "2.13.4")
 ThisBuild / versionIntroduced := Map("3.0.0-M2" -> "3.0.0")
