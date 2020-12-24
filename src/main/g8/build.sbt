@@ -22,7 +22,7 @@ ThisBuild / initialCommands := """
   |import fs2._
   |import fs2.concurrent._
   |import scala.concurrent.duration._
-  |import $package$
+  |import $package$._
 """.stripMargin
 
 ThisBuild / testFrameworks += new TestFramework("munit.Framework")
