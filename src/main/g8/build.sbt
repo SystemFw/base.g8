@@ -4,18 +4,22 @@ ThisBuild / baseVersion := "0.1.0"
 ThisBuild / organization := "org.systemfw"
 ThisBuild / publishGithubUser := "SystemFw"
 ThisBuild / publishFullName := "Fabio Labella"
-
-replaceCommandAlias("ci","; project /; headerCheckAll; clean; testIfRelevant; docs/mdoc; mimaReportBinaryIssuesIfRelevant")
-
-// sbt-sonatype wants these in Global
-Global / homepage := Some(url("https://github.com/SystemFw/$name$"))
-Global / scmInfo := Some(ScmInfo(url("https://github.com/SystemFw/$name$"), "git@github.com:SystemFw/$name$.git"))
+ThisBuild / homepage := Some(url("https://github.com/SystemFw/$name$"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/SystemFw/$name$"),
+    "git@github.com:SystemFw/$name$.git"
+  )
+)
 Global / excludeLintKeys += scmInfo
+
+
+val Scala213 = "2.13.4"
 ThisBuild / spiewakMainBranches := Seq("main")
 
-ThisBuild / crossScalaVersions := Seq("3.0.0-M2", "2.12.10", "2.13.4")
+ThisBuild / crossScalaVersions := Seq(Scala213, "3.0.0-M2", "2.12.10")
 ThisBuild / versionIntroduced := Map("3.0.0-M2" -> "3.0.0")
-
+ThisBuild / scalaVersion := (ThisBuild / crossScalaVersions).value.head
 ThisBuild / initialCommands := """
   |import cats._, data._, syntax.all._
   |import cats.effect._, concurrent._, implicits._
@@ -26,6 +30,10 @@ ThisBuild / initialCommands := """
 """.stripMargin
 
 ThisBuild / testFrameworks += new TestFramework("munit.Framework")
+
+def dep(org: String, prefix: String, version: String)(modules: String*)(testModules: String*) =
+  modules.map(m => org %% (prefix ++ m) % version) ++
+   testModules.map(m => org %% (prefix ++ m) % version % Test)
 
 lazy val root = project
   .in(file("."))
@@ -50,14 +58,46 @@ lazy val core = project
 lazy val docs = project
   .in(file("docs"))
   .settings(
-    mdocIn := file("modules/docs"),
-    mdocOut := file("docs"),
-    mdocVariables := Map("VERSION" -> version.value),
-    githubWorkflowArtifactUpload := false
-  ).dependsOn(core)
-   .enablePlugins(MdocPlugin, NoPublishPlugin)
+    mdocIn := file("docs"),
+    mdocOut := file("target/website"),
+    mdocVariables := Map(
+      "version" -> version.value,
+      "scalaVersions" -> crossScalaVersions.value
+        .map(v => s"- **$v**")
+        .mkString("\n")
+    ),
+    githubWorkflowArtifactUpload := false,
+    fatalWarningsInCI := false
+  )
+  .dependsOn(core)
+  .enablePlugins(MdocPlugin, NoPublishPlugin)
 
-def dep(org: String, prefix: String, version: String)(modules: String*)(testModules: String*) =
-  modules.map(m => org %% (prefix ++ m) % version) ++
-   testModules.map(m => org %% (prefix ++ m) % version % Test)
+ThisBuild / githubWorkflowBuildPostamble ++= List(
+  WorkflowStep.Sbt(
+    List("docs/mdoc"),
+    cond = Some(s"matrix.scala == '$Scala213'")
+  )
+)
+
+ThisBuild / githubWorkflowAddedJobs += WorkflowJob(
+  id = "docs",
+  name = "Deploy docs",
+  needs = List("publish"),
+  cond = """
+  | always() &&
+  | needs.build.result == 'success' &&
+  | (needs.publish.result == 'success' || github.ref == 'refs/heads/docs-deploy')
+  """.stripMargin.trim.linesIterator.mkString.some,
+  steps = githubWorkflowGeneratedDownloadSteps.value.toList :+
+    WorkflowStep.Use(
+      "peaceiris",
+      "actions-gh-pages",
+      "v3",
+      name = Some(s"Deploy docs"),
+      params = Map(
+        "publish_dir" -> "./target/website",
+        "github_token" -> "${{ secrets.GITHUB_TOKEN }}"
+      )
+    )
+)
 
