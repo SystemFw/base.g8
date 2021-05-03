@@ -63,7 +63,7 @@ lazy val docs = project
     mdocVariables := Map(
       "version" -> version.value,
       "scalaVersions" -> crossScalaVersions.value
-        .map(v => s"- **$v**")
+        .map(v => s"- **\$v**")
         .mkString("\n")
     ),
     githubWorkflowArtifactUpload := false,
@@ -75,7 +75,7 @@ lazy val docs = project
 ThisBuild / githubWorkflowBuildPostamble ++= List(
   WorkflowStep.Sbt(
     List("docs/mdoc"),
-    cond = Some(s"matrix.scala == '$Scala213'")
+    cond = Some(s"matrix.scala == '\$Scala213'")
   )
 )
 
@@ -96,7 +96,7 @@ ThisBuild / githubWorkflowAddedJobs += WorkflowJob(
       name = Some(s"Deploy docs"),
       params = Map(
         "publish_dir" -> "./target/website",
-        "github_token" -> "${{ secrets.GITHUB_TOKEN }}"
+        "github_token" -> "\${{ secrets.GITHUB_TOKEN }}"
       )
     )
 )
