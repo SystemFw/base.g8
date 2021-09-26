@@ -23,7 +23,8 @@ ThisBuild / scalaVersion := (ThisBuild / crossScalaVersions).value.head
 Global / excludeLintKeys += versionIntroduced
 ThisBuild / initialCommands := """
   |import cats._, data._, syntax.all._
-  |import cats.effect._, concurrent._, implicits._
+  |import cats.effect._, concurrent._
+  |import cats.effect.implicits._
   |import cats.effect.unsafe.implicits.global
   |import fs2._
   |import fs2.concurrent._
