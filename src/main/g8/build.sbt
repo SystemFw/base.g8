@@ -57,7 +57,7 @@ lazy val core = project
   )
 
 lazy val docs = project
-  .in(file("docs"))
+  .in(file("mdoc"))
   .settings(
     mdocIn := file("docs"),
     mdocOut := file("target/website"),
@@ -72,6 +72,8 @@ lazy val docs = project
   )
   .dependsOn(core)
   .enablePlugins(MdocPlugin, NoPublishPlugin)
+
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.11.0-11")
 
 ThisBuild / githubWorkflowBuildPostamble ++= List(
   WorkflowStep.Sbt(
@@ -97,6 +99,8 @@ ThisBuild / githubWorkflowAddedJobs += WorkflowJob(
         "publish_dir" -> "./target/website",
         "github_token" -> "\${{ secrets.GITHUB_TOKEN }}"
       )
-    )
+    ),
+  scalas = List(Scala213),
+  javas = githubWorkflowJavaVersions.value.toList
 )
 
