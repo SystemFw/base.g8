@@ -20,6 +20,7 @@ ThisBuild / spiewakMainBranches := Seq("main")
 ThisBuild / crossScalaVersions := Seq(Scala213, "3.0.0", "2.12.14")
 ThisBuild / versionIntroduced := Map("3.0.0-M2" -> "3.0.0")
 ThisBuild / scalaVersion := (ThisBuild / crossScalaVersions).value.head
+Global / excludeLintKeys += versionIntroduced
 ThisBuild / initialCommands := """
   |import cats._, data._, syntax.all._
   |import cats.effect._, concurrent._, implicits._
