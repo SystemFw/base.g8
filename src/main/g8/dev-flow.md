@@ -65,13 +65,44 @@ commits are fully built before you push a proper release tag: push
 `main`, wait for the snapshot release to complete, and then push the
 tag.
 
+## Links
+
+- https://github.com/djspiewak/sbt-spiewak
+- https://github.com/djspiewak/sbt-github-actions
+- https://docsify.js.org/#/
+- https://scalameta.org/mdoc/
+
+
 ## Initial setup
 
 These steps only need to be done once when setting up the repo.
 
-- Make sure the default branch is named `main`
-- Generate ci definitions with `sbt githubWorkflowGenerate` and commit the results.
-- Create and push a `gh-pages` branch. Enable Github Pages on that branch
+### Main branch
+
+Make sure the default branch is named `main`
+
+### Doc setup
+
+On your main branch, go in `docs/index.html` and, if necessary, change:
+
+- title
+- description
+- name
+- repo
+
+to match your project.
+
+Then, create and push a `gh-pages` branch:
+ - `git checkout --orphan gh-pages`
+ - Remove all files from the new branch
+ - Add an empty commit
+ - Push
+
+Finally, Enable Github Pages on that branch in Github settings.
+
+### CI setup
+
+Generate ci definitions with `sbt githubWorkflowGenerate` and commit the results.
 
 Then, configure the following encrypted secrets within GitHub Actions:
 
@@ -117,21 +148,13 @@ and publish it to a keyserver
 
 > gpg --keyserver http://keyserver.ubuntu.com:11371/ --send-key yourKeyId
 
-Finally, go in docs/index.html and, if necessary, change:
+Additional links:
 
-- title
-- description
-- name
-- repo
-
-to match your project.
-
-## Links
-
-- https://github.com/djspiewak/sbt-spiewak
-- https://github.com/djspiewak/sbt-github-actions
 - https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
-- https://docsify.js.org/#/
-- https://scalameta.org/mdoc/
 - https://github.com/jodersky/sbt-gpg
 - https://github.com/olafurpg/sbt-ci-release
+
+### Finish
+
+You should be all set and ready to go, feel free to delete the
+`Initial Setup` section of this doc.
