@@ -49,10 +49,10 @@ lazy val core = project
     scalafmtOnCompile := true,
     libraryDependencies ++=
       dep("org.typelevel", "cats-", "$cats$")("core")() ++
-      dep("org.typelevel", "cats-effect", "$ce$")("")("-laws") ++
+      dep("org.typelevel", "cats-effect", "$ce$")("")("-laws", "-testkit") ++
       dep("co.fs2", "fs2-", "$fs2$")("core", "io")() ++
       dep("org.scalameta", "munit", "$munit$")()("", "-scalacheck") ++
-      dep("org.typelevel", "", "$munit_ce$")()("munit-cats-effect-2") ++
+      dep("org.typelevel", "", "$munit_ce$")()("munit-cats-effect-3") ++
       dep("org.typelevel",  "scalacheck-effect", "$munit_check_eff$")()("", "-munit")
   )
 
