@@ -23,6 +23,7 @@ ThisBuild / scalaVersion := (ThisBuild / crossScalaVersions).value.head
 ThisBuild / initialCommands := """
   |import cats._, data._, syntax.all._
   |import cats.effect._, concurrent._, implicits._
+  |import cats.effect.unsafe.implicits.global
   |import fs2._
   |import fs2.concurrent._
   |import scala.concurrent.duration._
