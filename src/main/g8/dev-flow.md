@@ -148,11 +148,44 @@ and publish it to a keyserver
 
 > gpg --keyserver http://keyserver.ubuntu.com:11371/ --send-key yourKeyId
 
+
 Additional links:
 
 - https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 - https://github.com/jodersky/sbt-gpg
 - https://github.com/olafurpg/sbt-ci-release
+
+### Troubleshooting
+
+If you see an error that mentions:
+
+> Inappropriate ioctl for device
+
+while trying to publish, it means you have created your key with
+passphrase protection instead of exporting it unencrypted.
+You can verify this is the case by running:
+
+> gpg --export-secret-keys yourKeyId | base64 | pbcopy
+
+If it asks you to insert your passphrase, you do have passphrase
+protection. To fix:
+
+> gpg --edit-key yourKeyId
+
+then type:
+
+> passwd
+
+you will need to insert your passphrase, and then leave the new
+passphrase blank, pressing `Enter` as required. Finally, type:
+
+> save
+
+Now, export the key with:
+
+> gpg --export-secret-keys yourKeyId | base64 | pbcopy
+
+and update your PGP_SECRET Github Secret.
 
 ### Finish
 
