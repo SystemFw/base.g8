@@ -191,3 +191,51 @@ and update your PGP_SECRET Github Secret.
 
 You should be all set and ready to go, feel free to delete the
 `Initial Setup` section of this doc.
+
+
+## GPG CI failure
+
+After months or years of working, you might see CI failures with:
+
+```
+[info] gpg: no default secret key: No secret key
+[info] gpg: signing failed: No secret key
+[info] gpg: no default secret key: No secret key
+[info] gpg: signing failed: No secret key
+```
+
+This means that your key is expired.
+
+> gpg --list-keys
+
+will show `[expired yyyy-mm-dd]` next to the expired key.
+
+> gpg --edit-key yourKeyId
+
+enters the interactive editing setup, use 
+
+> expire
+
+to renew the key (lol), it will prompt you for a duration.
+
+Then,
+
+> key 1
+
+to select the subkey (you will see a start next to it), again
+
+> expire
+
+and follow the prompt.
+
+Finally,
+
+> save
+
+and
+
+> gpg --keyserver keyserver.ubuntu.com --send-keys yourKeyId
+
+to publish.
+
+Bitrot narrowly averted again.
