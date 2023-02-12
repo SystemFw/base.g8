@@ -112,7 +112,7 @@ Then, configure the following encrypted secrets within GitHub Actions:
 
 Once you know the value for a secret, it can be created by going to
 
-> Your repo -> settings -> left sidebar -> Secrets -> new repository secret.
+> Your repo -> settings -> left sidebar -> Secrets and variables -> Actions -> new repository secret.
 
 populate sonatype user and password with a user token:
 
@@ -237,5 +237,17 @@ and
 > gpg --keyserver keyserver.ubuntu.com --send-keys yourKeyId
 
 to publish.
+
+Finally, you have to update the secret in github again:
+
+Export the key
+
+> gpg --export-secret-keys yourKeyId | base64 | pbcopy
+
+and paste it in the PGP_SECRET Github Secret.
+
+> Your repo -> settings -> left sidebar -> Secrets and variables -> Actions -> PGP_SECRET -> update icon.
+
+Then restart the CI workflow.
 
 Bitrot narrowly averted again.
