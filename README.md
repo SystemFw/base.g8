@@ -1,3 +1,13 @@
+## DEPRECATED
+
+Largely superseded by https://typelevel.org/sbt-typelevel/
+
+Main difference is the website setup, see https://github.com/systemFw/upperbound or https://github.com/systemFw/dynosaur
+
+
+---------------
+
+
 My template for FP scala projects with cats-effect and fs2.
 Testing based on munit.
 
